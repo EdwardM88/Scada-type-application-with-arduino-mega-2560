@@ -70,7 +70,8 @@ To build, run, and test this project, ensure your environment meets the followin
   * Launch the app: You can now run the program, and any data you enter will be securely saved in your database.
 
 ## Circuit diagram
- <img width="500" height="500" alt="circuitDiagram" src="https://github.com/user-attachments/assets/63a92ed1-2ed9-4f37-bb86-03b6d8284d9e" />
+ <img width="860" height="700" alt="circuitDiagram" src="https://github.com/user-attachments/assets/6d5c5190-5458-46f3-8b42-4c7cc884f709" />
+
 
   * S circle is my servo motor
   * Because DHT11 doesn't has a symbol,I reprezented him as a rectangle,and included ground,VDD and out wires.
