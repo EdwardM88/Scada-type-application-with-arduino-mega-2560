@@ -1,0 +1,244 @@
+﻿<Window x:Class="MiniSCADA.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MiniSCADA"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="800" Width="1300"
+        MinHeight="500" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="#f1fff1" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="SensorLabel" TargetType="TextBlock">
+             <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,15,10,15"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        
+        <Style x:Key="BtnStyle1" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Margin" Value="0,1" />
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Padding" Value="12,20" />
+            <Setter Property="Cursor" Value="Hand"/> 
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"  Margin="0,0,0,10" >
+            <TextBlock Text="SCADA Lite"
+                       FontSize="28"
+                       FontWeight="DemiBold"
+                       HorizontalAlignment="Center" Width="156"/>
+        </Grid>
+
+
+    
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Background="#cbffbf">
+                <Image Source="/images/SCADA_Logo-removebg-preview.png" Height="75"></Image>
+                <Separator Margin="10,10" Background="LightGreen"></Separator>
+
+                <Button Content="Dashboard" Style="{StaticResource BtnStyle1}" x:Name="Mainbtn" Click="Mainbtn_Click" />
+                <Button Content="Alarms" Style="{StaticResource BtnStyle1}" x:Name="AlarmsBtn" Click="AlarmsBtn_Click" />
+                <Button Content="Sensors" Style="{StaticResource BtnStyle1 }" x:Name="Sensorsbtn" Click="Sensorsbtn_Click"/>
+                <Button Content="Analytics" Style="{StaticResource BtnStyle1}" x:Name="DataBtn" Click="DataBtn_Click" />
+
+                <Separator Margin="10,10" Background="LightGreen"/>
+
+                <Button Content="Setting" Style="{StaticResource BtnStyle1}" />
+            </StackPanel>
+
+                <Border Grid.Column="1" BorderBrush="#90EE90" BorderThickness="3" Background="#FAFFFA">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Text="Sensors"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           FontSize="24">
+                    </TextBlock>
+
+                    <Border  >
+                        <TextBlock Grid.Row="0"
+                               x:Name="Clocktxt"
+                               Text="Clock"
+                               HorizontalAlignment="Right"
+                               FontSize="24"
+                               FontWeight="SemiBold"/>
+                     </Border>
+
+            <TextBlock Grid.Row="1" Text="Status" FontSize="20" HorizontalAlignment="Center" FontWeight="DemiBold"/>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="0,0,20,0" >
+                            <TextBlock Text="Temperature:" Style="{StaticResource SensorLabel}" />
+                            <TextBlock Text="Humidity:" Style="{StaticResource SensorLabel}" />
+                            <TextBlock Text="Light:" Style="{StaticResource SensorLabel}" />
+                            <TextBlock Text="HVAC:" Style="{StaticResource SensorLabel}" />
+                            <TextBlock Text="Aerisire:" Style="{StaticResource SensorLabel}" />
+                            <TextBlock Text="LED Lamps:" Style="{StaticResource SensorLabel}" />
+                        </StackPanel>
+
+                        <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Margin="0,0,20,0">
+                            <TextBlock x:Name="txtTemp" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                            <TextBlock x:Name="txtHum" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                            <TextBlock x:Name="txtLight" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                            <TextBlock x:Name="txtHVAC" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                            <TextBlock x:Name="txtMotor" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                            <TextBlock x:Name="txtLED" Text="Status" Style="{StaticResource SensorLabel}"></TextBlock>
+                        </StackPanel>
+                    </Grid>
+
+                    <Border Grid.Row="3" Margin="0,0,10,0" BorderBrush="Black" BorderThickness="1" Background="White" CornerRadius="3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Grid.Row="0" Text="Alarms" FontSize="16" FontWeight="DemiBold" HorizontalAlignment="Center" />
+
+                            <ListBox x:Name="AlarmsListBox" Grid.Row="1"  FontSize="14" FontFamily="Consolas"
+                                             ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                             HorizontalContentAlignment="Stretch" >
+                                <ListBox.Resources>
+                                    <Style TargetType="ListBoxItem">
+                                        <Setter Property="Padding" Value="2" />
+                                    </Style>
+                                </ListBox.Resources>
+
+                                <ListBoxItem Background="White" FontSize="16" IsHitTestVisible="False">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="140" />
+                                            <ColumnDefinition Width="120" />
+                                            <ColumnDefinition Width="180" />
+                                            <ColumnDefinition Width="120" />
+                                        </Grid.ColumnDefinitions>
+
+                                            <TextBlock Grid.Column="0" Text="Time"/>
+                                            <TextBlock Grid.Column="1" Text="Sensor"/>
+                                            <TextBlock Grid.Column="2" Text="Error type"/>
+                                            <TextBlock Grid.Column="3" Text="Priority"/>
+
+                                    </Grid>
+                                </ListBoxItem>
+                            </ListBox>
+                        </Grid>
+                    </Border>
+
+                    <StackPanel Grid.Row="4" Orientation="Horizontal" HorizontalAlignment="Center">
+                        <ComboBox x:Name="comboBoxPort" Width="130" Height="26" Margin="0,0,10,0" FontSize="14" Background="White" DropDownOpened="cmbPorts_DropDownOpened">
+                        </ComboBox>
+                        <Button x:Name="btnConnect" Content="Connect" Width="80" Background="#c1f9c3" FontSize="16" FontWeight="SemiBold" Click="bntConnect_Click" ></Button>
+                        <TextBlock x:Name="StatusBar" Text="No Connected" Foreground="Black" Margin="0,0,0,0" FontSize="14"  />
+                    </StackPanel>
+
+                </Grid>
+            </Border>
+
+            
+            <Border Grid.Column="2" BorderBrush="#90EE90" BorderThickness="3" Background="#FAFFFA">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Text="Measures"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           FontSize="24">
+                    </TextBlock>
+
+                    <ListBox x:Name="DataMeasureLog" Grid.Row="1" 
+                             BorderBrush="#90EE90"
+                             BorderThickness="1"
+                             Background="White"
+                             HorizontalContentAlignment="Center"
+                             Margin="0,10,0,0">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="140"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" FontSize="20" Text="{Binding Time}"/>
+                                    <TextBlock Grid.Column="1" FontSize="20" Text="{Binding Temperature}"/>
+                                    <TextBlock Grid.Column="2" FontSize="20" Text="{Binding Humidity}"/>
+                                    <TextBlock Grid.Column="3" FontSize="20" Text="{Binding Light}"/>
+
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        
+                       
+                    </ListBox>
+
+                    <Grid Grid.Row="2" Background="Green">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" Content="Measure" Background="#c1f9c3" FontSize="16" FontWeight="SemiBold" x:Name="Measurebnt" Click="Measurebtn_Click" />
+                        <Button Grid.Column="1" Content="S.O.S." Background="#ff0000" FontSize="16" FontWeight="SemiBold" x:Name="SOSbnt" Click="SOSbtn_Click" />
+                        <Button Grid.Column="2" Content="Test connection" Background="#c1f9c3" FontSize="16" FontWeight="SemiBold" x:Name="TestCon" Click="TestCon_Click" />
+
+                    </Grid>
+
+    
+                </Grid>
+                   
+            </Border>
+        </Grid>
+
+        <TextBlock Grid.Row="2"
+                   Text="© 2025 Nume proiect by Edy"
+                   FontSize="20"
+                  HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="Black"
+                   Margin="0,10,0,0"/>
+
+    </Grid>
+</Window>

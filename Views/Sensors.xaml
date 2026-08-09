@@ -1,0 +1,445 @@
+﻿<Window x:Class="MiniSCADA.Sensors"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MiniSCADA"
+        mc:Ignorable="d"
+        Title="Sensors" Height="800" Width="1300"
+        MinHeight="500" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="#f1fff1" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <Style x:Key="BtnStyle1" TargetType="Button">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="FontSize" Value="15" />
+            <Setter Property="Margin" Value="0,1" />
+            <Setter Property="BorderThickness" Value="0"></Setter>
+            <Setter Property="Padding" Value="12,20" />
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+        <Style x:Key="SensorNames" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="3"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="0,0,0,3"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="ConnButton" TargetType="Button">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Margin" Value="0,0,0,3"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="Background" Value="#cbffbf"/>
+            <Setter Property="Padding" Value="2"/>
+        </Style>
+        <Style x:Key="ModernDatePicker" TargetType="{x:Type DatePicker}">
+            <Setter Property="Foreground" Value="#333"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="IsTodayHighlighted" Value="True"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DatePicker}">
+                        <Border Background="White" 
+                            CornerRadius="8" 
+                            BorderBrush="#DDDDDD" 
+                            BorderThickness="1" 
+                            Padding="2">
+
+                            <Border.Effect>
+                                <DropShadowEffect BlurRadius="5" Color="#EEE" ShadowDepth="1"/>
+                            </Border.Effect>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="30"/>
+                                </Grid.ColumnDefinitions>
+
+                                <DatePickerTextBox x:Name="PART_TextBox" 
+                                               Grid.Column="0" 
+                                               Background="Transparent" 
+                                               BorderThickness="0"
+                                               VerticalContentAlignment="Center"
+                                               Padding="10,0,0,0"
+                                               SelectionBrush="#0984E3"/>
+
+                                <Button x:Name="PART_Button" 
+                                    Grid.Column="1" 
+                                    Width="30"
+                                    Background="Transparent" 
+                                    BorderThickness="0"
+                                    Cursor="Hand">
+                                    <TextBlock Text="📅" FontSize="16" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}">
+                                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+
+                                <Popup x:Name="PART_Popup" AllowsTransparency="True" Placement="Bottom" StaysOpen="False"/>
+                            </Grid>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0"  Margin="0,0,0,10" >
+            <TextBlock Text="SCADA Lite"
+                       FontSize="28"
+                       FontWeight="DemiBold"
+                       HorizontalAlignment="Center" Width="156"/>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Background="#cbffbf">
+                <Image Source="/images/SCADA_Logo-removebg-preview.png" Height="75"></Image>
+                <Separator Margin="10,10" Background="LightGreen"></Separator>
+
+                <Button Content="Dashboard" Style="{StaticResource BtnStyle1}" x:Name="Mainbtn" Click="Mainbtn_Click" />
+                <Button Content="Alarms" Style="{StaticResource BtnStyle1}" x:Name="AlarmsBtn" Click="AlarmsBtn_Click" />
+                <Button Content="Sensors" Style="{StaticResource BtnStyle1 }" x:Name="Sensorsbtn" Click="Sensorsbtn_Click"/>
+                <Button Content="Data view" Style="{StaticResource BtnStyle1}" x:Name="DataBtn" Click="DataBtn_Click" />
+
+                <Separator Margin="10,10" Background="LightGreen"/>
+
+                <Button Content="Setting" Style="{StaticResource BtnStyle1}" />
+            </StackPanel>
+
+            <DockPanel Grid.Column="1">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="Green" CornerRadius="8" Background="White" Margin="1,0,3,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0" HorizontalAlignment="Center">
+                                <TextBlock Text="Sensors Specifications" FontSize="22" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Padding="5" />
+
+                            </DockPanel>
+                        
+                            <DockPanel Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Model" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Connection" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Status" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                </Grid>
+                            </DockPanel>
+
+                            <StackPanel Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Center" Margin="34,0,0,0" >
+                                        <TextBlock Margin="0,10" Text="DHT11:" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="PhotoResistor:" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="HVAC:" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Motor:" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="LEDS:" Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Margin="12,0,0,0" Grid.ColumnSpan="2" >
+                                        <TextBlock Margin="0,10" Text="Port D2" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Port A0" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Port D8+D10+D9+D11" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Port D5" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Port D3+D4" Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" >
+                                        <TextBlock Margin="0,10" x:Name="DHT11" Text="Status" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="Photoresistor" Text="Status" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="HVAC" Text="Status" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="Motor" Text="Status" Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="LEDS" Text="Status" Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                                
+                        </Grid>
+                    </Border>
+
+                    <Border Grid.Row="1" BorderThickness="1" BorderBrush="Green" CornerRadius="8" Background="White" Margin="-1,11,7,2">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel HorizontalAlignment="Center" Grid.Row="0">
+                                <TextBlock Text="Sensors Control" FontSize="22" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Padding="5" />
+                            </DockPanel>
+
+
+                            <DockPanel Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Model" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="7" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Value" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="7" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Connection" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="7" Width="234" Background="White" />
+                                    </StackPanel>
+                                </Grid>
+                            </DockPanel>
+
+                            <StackPanel Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+
+                                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="34,0,0,0" >
+                                        <TextBlock Margin="0,10"  Text="DHT11:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="PhotoResistor:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="HVAC:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Motor:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="LED Lamps:"  Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Margin="12,0,0,0" Grid.ColumnSpan="2" >
+                                        <TextBlock Margin="0,10" x:Name="DHT11_Control" Text="Value"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="Pr_Control" Text="Value"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="HVAC_Control" Text="Value"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="Motor_Control" Text="Value"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="LED_Control" Text="Value"  Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" >
+                                        <Button Margin="0,10" x:Name="ConnBtn_DHT11"  Click="DHT11_Click" Content="Connect" Style="{StaticResource ConnButton}"/>
+                                        <Button Margin="0,10" x:Name="ConnBtn_presistor" Click="PResistor_Click" Content="Connect" Style="{StaticResource ConnButton}"/>
+                                        <Button Margin="0,10" x:Name="ConnBtn_HVAC"  Click="HVAC_Click" Content="Connect" Style="{StaticResource ConnButton}"/>
+                                        <Button Margin="0,10" x:Name="ConnBtn_Motor"  Click="Motor_Click" Content="Connect" Style="{StaticResource ConnButton}"/>
+                                        <Button Margin="0,10" x:Name="ConnBtn_LED"  Click="LED_Click" Content="Connect" Style="{StaticResource ConnButton}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+                        
+                    </Border>
+
+                </Grid>
+            </DockPanel>
+
+            <DockPanel Grid.Column="2">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border Grid.Row="0" BorderThickness="1" BorderBrush="Green" CornerRadius="8" Background="White" Margin="3,0,3,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <StackPanel Grid.Row="0">
+                                <TextBlock Text="Sensors Maintenance" FontSize="22" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Padding="5" />
+                                <Separator Height="7" Width="234" Background="White" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="10,10,10,10">
+                                <TextBlock Text="Select Sensor: " Margin="20,0,10,0" FontSize="17" FontWeight="DemiBold"/>
+                                <ComboBox x:Name="SensorComboBox" Width="250" Background="Wheat" FontSize="15" Margin="10,0,10,0">
+                                    <ComboBoxItem Content="DHT11"/>
+                                    <ComboBoxItem Content="Photoresistor"/>
+                                    <ComboBoxItem Content="HVAC"/>
+                                    <ComboBoxItem Content="Motor"/>
+                                    <ComboBoxItem Content="LEDS"/>
+                                </ComboBox>
+                            </StackPanel>
+                            
+                            <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="10,10,10,10">
+                                <TextBlock Text="Select date:  "  Margin="20,0,10,0" FontSize="17" FontWeight="DemiBold"/>
+                                <DatePicker Style="{StaticResource ModernDatePicker}" x:Name="DateMaintenance" HorizontalAlignment="Center" Width="200"/>
+                                <Separator Height="7" Width="234" Background="White" />
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="10,10,10,10">
+                                <TextBlock Text="Select type of maintenance:  " Margin="20,0,10,0" FontSize="17" FontWeight="DemiBold"/>
+                                <ComboBox x:Name="Sensor2ComboBox" Width="250" Background="Wheat" FontSize="15" Margin="10,0,10,5">
+                                    <ComboBoxItem Content="Change sensor"/>
+                                    <ComboBoxItem Content="Test sensor"/>
+                                    <ComboBoxItem Content="Change parts of equipement"/>
+                                    <ComboBoxItem Content="Other"/>
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="10,10,10,10">
+                                <TextBlock Text="Observations" Margin="20,0,10,0" FontSize="17" FontWeight="DemiBold"/>
+                                <ComboBox x:Name="ObcomboBox" Width="250" Background="Wheat" FontSize="15" IsEditable="True" KeyUp="ObMentenanta_KeyUp">
+                                </ComboBox>
+                            </StackPanel>
+
+                            <StackPanel  Grid.Row="5"  Margin="10,10,10,10">
+                                <Button x:Name="MaintenanceBtn" Click="MaintenanceBtn_Click" Content="Select" HorizontalAlignment="Center"
+                                        FontSize="18"
+                                        Width="120"
+                                        Background="#cbffbf"
+                                        Padding="4"
+                                         Margin="0,8"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="1"  BorderThickness="1" BorderBrush="Green" CornerRadius="8" Background="White" Margin="3,10,3,0">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <DockPanel Grid.Row="0">
+                                <TextBlock Text="Sensors Health" FontSize="22" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,10,0,0" Padding="5" />
+                            </DockPanel>
+                            <DockPanel Grid.Row="1">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Model" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBlock Text="Health" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Text="Maintenance" HorizontalAlignment="Center" FontSize="20" FontWeight="DemiBold"/>
+                                        <Separator Height="5" Width="234" Background="White" />
+                                    </StackPanel>
+                                </Grid>
+                            </DockPanel>
+                            <DockPanel Grid.Row="2">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0" Orientation="Vertical" HorizontalAlignment="Left" Margin="34,0,0,0" >
+                                        <TextBlock Margin="0,10" x:Name="DHT11T" Text="DHT11:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="PhotoResistor:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="HVAC:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="Motor:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" Text="LED Lamps:"  Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Vertical" HorizontalAlignment="Left" Margin="12,0,0,0" Grid.ColumnSpan="2" >
+                                        <TextBlock Margin="0,10" x:Name="DHT11_Health" Text="Healthy"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="PR_Health" Text="Healthy"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="HVAC_Health" Text="Healthy"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="Motor_Health" Text="Healthy"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="LED_Health" Text="Healthy"  Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="2" Orientation="Vertical" HorizontalAlignment="Center" >
+                                        <TextBlock Margin="0,10" x:Name="DHT11M" Text="Maintenance"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="PrM" Text="Maintenance"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="HVACM" Text="Maintenance:"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="MotorM" Text="Maintenance"  Style="{StaticResource SensorNames}" />
+                                        <TextBlock Margin="0,10" x:Name="LEDM" Text="Maintenance"  Style="{StaticResource SensorNames}" />
+                                    </StackPanel>
+
+                                </Grid>
+                            </DockPanel>
+                            
+                        </Grid>
+                    </Border>
+                </Grid>
+            </DockPanel>
+
+        </Grid>
+
+
+        <TextBlock Grid.Row="2"
+              Text="© 2025 Nume proiect by Edy"
+              FontSize="20"
+             HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Foreground="Black"
+              Margin="0,10,0,0"/>
+    </Grid>
+</Window>
